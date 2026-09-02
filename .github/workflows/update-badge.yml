@@ -10,10 +10,9 @@ permissions:
 jobs:
   update-badge:
     runs-on: ubuntu-latest
-    if: github.actor != 'github-actions[bot]'
     steps:
       - uses: actions/checkout@v4
-      - name: Fix badges, timer, levels, sounds, and rounded square
+      - name: Fix badges, timer, levels, sounds, rounded square, and quiz UI
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -47,18 +46,26 @@ jobs:
           s = s.replace('(30000-(Date.now()-started))', '(60000-(Date.now()-started))')
           s = s.replace('>=30000', '>=60000')
 
-          # 音声ファイルを確実に読み込む。Web Audio APIは最初のボタン操作時に開始される。
           if 'src="sounds.js"' not in s and "src='sounds.js'" not in s:
               s = s.replace('</head>', '<script src="sounds.js" defer></script></head>')
 
-          # 正方形・長方形の角を少し丸く見せる。立体描画のポリゴンには影響しない。
           rounded_css = '.svgbox svg .solid-base-face,.svgbox svg .solid-top-face{stroke-linejoin:round}'
           if rounded_css not in s:
               s = s.replace('</style>', rounded_css + '</style>')
 
+          # タブレットでは4択を大きな縦並びにして、押しやすくする。
+          tablet_css = '@media(min-width:761px){.choices{grid-template-columns:1fr;gap:10px}.choice{min-height:68px;padding:12px 14px;font-size:.95rem;border-radius:14px}.prompt{font-size:1.4rem;margin:6px 0 14px}}'
+          if tablet_css not in s:
+              s = s.replace('</style>', tablet_css + '</style>')
+
+          # 3回まちがえたら、その時点でチャレンジ終了。適当に連打するのを防ぐ。
+          old_answer = "}else{btn.classList.add('wrong');combo=0;wrong++;document.querySelectorAll('.choice').forEach(x=>{if(x.dataset.k===cur.k)x.classList.add('correct')});$('#feedback').textContent='💡 正解は「'+D[cur.k]+'」';$('#feedback').className='feedback bad'}updateLive();advanceId=setTimeout(()=>{if(Date.now()-started>=60000)end();else renderQ()},ok?180:420)}"
+          new_answer = "}else{btn.classList.add('wrong');combo=0;wrong++;document.querySelectorAll('.choice').forEach(x=>{if(x.dataset.k===cur.k)x.classList.add('correct')});$('#feedback').textContent=wrong>=3?'🛑 3回まちがえたので、チャレンジ終了！':'💡 正解は「'+D[cur.k]+'」';$('#feedback').className='feedback bad'}updateLive();advanceId=setTimeout(()=>{if(Date.now()-started>=60000||wrong>=3)end();else renderQ()},ok?180:420)}"
+          if old_answer in s:
+              s = s.replace(old_answer, new_answer)
+
           p.write_text(s, encoding='utf-8')
 
-          # solid-svg.js: 正方形の四隅を丸めた多角形として描画する。
           q = Path('solid-svg.js')
           z = q.read_text(encoding='utf-8')
           old_square = "case'square':{const s=d.side||5;return[[-s/2,-s/2],[s/2,-s/2],[s/2,s/2],[-s/2,s/2]];}"
@@ -72,5 +79,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html solid-svg.js
-          git diff --cached --quiet || git commit -m 'fix: enable sounds and round square corners'
+          git diff --cached --quiet || git commit -m 'fix: improve quiz tablet layout and mistake limit'
           git push
