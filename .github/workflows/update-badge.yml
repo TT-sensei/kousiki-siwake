@@ -13,7 +13,7 @@ jobs:
     if: github.actor != 'github-actions[bot]'
     steps:
       - uses: actions/checkout@v4
-      - name: Update badge assets and challenge timer
+      - name: Update badge assets, challenge timer, and level selection
         run: |
           python - <<'PY'
           from pathlib import Path
@@ -30,6 +30,16 @@ jobs:
           if old_render in s:
               s = s.replace(old_render, new_render)
 
+          old_style = '.level.on{border-color:var(--blue);background:var(--blue2)}'
+          new_style = '.level.on{border-color:var(--blue);background:var(--blue2)}.level[data-l="2"].on{border-color:var(--green);background:#eef9f4}.level[data-l="2"].on b{color:var(--green)}.level[data-l="3"].on{border-color:#8b5cf6;background:#f3edff}.level[data-l="3"].on b{color:#7c3aed}'
+          if old_style in s and 'level[data-l="2"].on' not in s:
+              s = s.replace(old_style, new_style)
+
+          old_levels = "document.querySelector('.levels').onclick=e=>{const b=e.target.closest('.level');if(!b)return;L=+b.dataset.l;renderHome()}"
+          new_levels = "document.querySelector('.levels').onclick=e=>{const b=e.target.closest('.level');if(!b)return;L=+b.dataset.l;document.querySelectorAll('.level').forEach(x=>x.classList.toggle('on',+x.dataset.l===L));renderHome()}"
+          if old_levels in s:
+              s = s.replace(old_levels, new_levels)
+
           s = s.replace('30.0秒', '60.0秒')
           s = s.replace('30秒で、図形に合う公式をできるだけ正確に選びます。', '60秒で、図形に合う公式をできるだけ正確に選びます。')
           s = s.replace('30秒でどこまで伸ばせるかな？', '60秒でどこまで伸ばせるかな？')
@@ -38,10 +48,10 @@ jobs:
 
           p.write_text(s, encoding='utf-8')
           PY
-      - name: Commit badge and timer change
+      - name: Commit badge, timer, and level selection change
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git diff --cached --quiet || git commit -m 'fix: vary badge assets and set timer to 60 seconds'
+          git diff --cached --quiet || git commit -m 'fix: highlight selected level'
           git push
