@@ -16,6 +16,7 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
 
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
@@ -53,16 +54,31 @@ jobs:
           if rounded_css not in s:
               s = s.replace('</style>', rounded_css + '</style>')
 
-          # タブレットでは4択を大きな縦並びにして、押しやすくする。
           tablet_css = '@media(min-width:761px){.choices{grid-template-columns:1fr;gap:10px}.choice{min-height:68px;padding:12px 14px;font-size:.95rem;border-radius:14px}.prompt{font-size:1.4rem;margin:6px 0 14px}}'
           if tablet_css not in s:
               s = s.replace('</style>', tablet_css + '</style>')
 
-          # 3回まちがえたら、その時点でチャレンジ終了。適当に連打するのを防ぐ。
-          old_answer = "}else{btn.classList.add('wrong');combo=0;wrong++;document.querySelectorAll('.choice').forEach(x=>{if(x.dataset.k===cur.k)x.classList.add('correct')});$('#feedback').textContent='💡 正解は「'+D[cur.k]+'」';$('#feedback').className='feedback bad'}updateLive();advanceId=setTimeout(()=>{if(Date.now()-started>=60000)end();else renderQ()},ok?180:420)}"
-          new_answer = "}else{btn.classList.add('wrong');combo=0;wrong++;document.querySelectorAll('.choice').forEach(x=>{if(x.dataset.k===cur.k)x.classList.add('correct')});$('#feedback').textContent=wrong>=3?'🛑 3回まちがえたので、チャレンジ終了！':'💡 正解は「'+D[cur.k]+'」';$('#feedback').className='feedback bad'}updateLive();advanceId=setTimeout(()=>{if(Date.now()-started>=60000||wrong>=3)end();else renderQ()},ok?180:420)}"
-          if old_answer in s:
-              s = s.replace(old_answer, new_answer)
+          # 解答中の図形から数値・説明テキストを消し、図形名を大きく表示する。
+          shape_css = '.shape-name{text-align:center;font-size:clamp(1.6rem,3vw,2.4rem);font-weight:1000;padding:7px 10px 13px;line-height:1.15}.svgbox svg text{display:none}'
+          if shape_css not in s:
+              s = s.replace('</style>', shape_css + '</style>')
+          if 'id="shapeName"' not in s:
+              s = s.replace('<div id="svgbox" class="svgbox"></div>', '<div id="svgbox" class="svgbox"></div><div id="shapeName" class="shape-name"></div>')
+          render_needle = "$('#svgbox').innerHTML=draw(cur.k);"
+          render_add = "$('#svgbox').innerHTML=draw(cur.k);$('#shapeName').textContent=cur.k;"
+          if render_needle in s and "$('#shapeName').textContent=cur.k" not in s:
+              s = s.replace(render_needle, render_add)
+
+          # 3回まちがえたら、その時点でチャレンジ終了。
+          if 'wrong>=3' not in s:
+              pattern = r"(wrong\+\+;)(.*?)(updateLive\(\);advanceId=setTimeout\(\(\)=>\{if\(Date\.now\(\)-started>=60000\)end\(\);else renderQ\(\)\},ok\?180:420\)\))"
+              replacement = r"\1\2updateLive();advanceId=setTimeout(()=>{if(Date.now()-started>=60000||wrong>=3)end();else renderQ()},ok?180:420)"
+              s, n = re.subn(pattern, replacement, s, count=1)
+              if n == 0:
+                  old = "if(Date.now()-started>=60000)end();else renderQ()"
+                  new = "if(Date.now()-started>=60000||wrong>=3)end();else renderQ()"
+                  s = s.replace(old, new, 1)
+              s = s.replace("$('#feedback').textContent='💡 正解は「'+D[cur.k]+'」'", "$('#feedback').textContent=wrong>=3?'🛑 3回まちがえたので、チャレンジ終了！':'💡 正解は「'+D[cur.k]+'」'", 1)
 
           p.write_text(s, encoding='utf-8')
 
@@ -79,5 +95,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html solid-svg.js
-          git diff --cached --quiet || git commit -m 'fix: improve quiz tablet layout and mistake limit'
+          git diff --cached --quiet || git commit -m 'fix: improve quiz UI and mistake limit'
           git push
