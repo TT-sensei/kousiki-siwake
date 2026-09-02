@@ -13,21 +13,35 @@ jobs:
     if: github.actor != 'github-actions[bot]'
     steps:
       - uses: actions/checkout@v4
-      - name: Replace badge asset
+      - name: Update badge assets and challenge timer
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-          old = 'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/web/badges/math/geometry/badge.webp'
-          new = 'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/web/badges/common/champion/badge.webp'
-          if old in s:
-              p.write_text(s.replace(old, new), encoding='utf-8')
+
+          old_b = "const B='https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/web/badges/common/champion/badge.webp';"
+          new_b = "const BADGE_ASSETS=['accuracy','adventurer','breakthrough','challenger','champion','clear','combo','comeback','connection','courage','creative','curiosity'].map(x=>'https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/badges/common/'+x+'/badge.png');"
+          if old_b in s:
+              s = s.replace(old_b, new_b)
+
+          old_render = "function renderBadges(){const x=bag();$('#badges').innerHTML=BADGES.map(b=>{const on=!!x[b[0]];return`<div class=\"badge ${on?'earned':'lock'}\"><span class=\"badge-state\">${on?'獲得済み':'未獲得'}</span><img src=\"${B}\" alt=\"${b[1]}\"><h3>${b[3]} ${b[1]}</h3><p>${b[2]}</p></div>`}).join('')}"
+          new_render = "function renderBadges(){const x=bag();$('#badges').innerHTML=BADGES.map((b,i)=>{const on=!!x[b[0]];const img=BADGE_ASSETS[i%BADGE_ASSETS.length];return`<div class=\"badge ${on?'earned':'lock'}\"><span class=\"badge-state\">${on?'獲得済み':'未獲得'}</span><img src=\"${img}\" alt=\"${b[1]}\"><h3>${b[3]} ${b[1]}</h3><p>${b[2]}</p></div>`}).join('')}"
+          if old_render in s:
+              s = s.replace(old_render, new_render)
+
+          s = s.replace('30.0秒', '60.0秒')
+          s = s.replace('30秒で、図形に合う公式をできるだけ正確に選びます。', '60秒で、図形に合う公式をできるだけ正確に選びます。')
+          s = s.replace('30秒でどこまで伸ばせるかな？', '60秒でどこまで伸ばせるかな？')
+          s = s.replace('(30000-(Date.now()-started))', '(60000-(Date.now()-started))')
+          s = s.replace('>=30000', '>=60000')
+
+          p.write_text(s, encoding='utf-8')
           PY
-      - name: Commit badge change
+      - name: Commit badge and timer change
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add index.html
-          git diff --cached --quiet || git commit -m 'fix: use distinct badge asset'
+          git diff --cached --quiet || git commit -m 'fix: vary badge assets and set timer to 60 seconds'
           git push
