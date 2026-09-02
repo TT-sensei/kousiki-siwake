@@ -8,262 +8,48 @@
 <link rel="stylesheet" href="https://tt-sensei.github.io/edu-effects/css/edu-effects.css">
 <link rel="stylesheet" href="https://tt-sensei.github.io/edu-effects/css/edu-learning.css">
 <style>
-:root{
-  --paper:#f5f2ea;--white:#fff;--ink:#172033;--muted:#5d6677;--line:#d9d4c8;
-  --blue:#2762d4;--blue-soft:#edf3ff;--green:#2f8b68;--green-soft:#eef9f4;
-  --coral:#ee6a52;--coral-soft:#fff1ed;--amber:#e7a72d;--navy:#172b4d;
-  --shadow:0 14px 40px rgba(23,32,51,.10);--radius:22px;--tap:48px;
-}
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font-family:"Hiragino Sans","Yu Gothic UI","Yu Gothic",system-ui,sans-serif;line-height:1.55}
-button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}
-button,input{touch-action:manipulation}
-button:focus-visible{outline:4px solid rgba(39,98,212,.28);outline-offset:3px}
-.app{width:min(1440px,100%);margin:0 auto;padding:12px 18px 24px}
-.sitebar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px;margin-bottom:10px}
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
-.brand img{width:62px;height:62px;object-fit:contain;flex:none}
-.brand h1{font-size:clamp(1.35rem,2.5vw,2rem);line-height:1.15;letter-spacing:-.04em;margin:0}
-.brand p{margin:4px 0 0;color:var(--muted);font-size:.84rem;font-weight:700}
-.header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-.pill{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--white);font-weight:900;white-space:nowrap}
-.icon-btn{min-width:48px;min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:14px;background:var(--white);font-weight:900;cursor:pointer}
-.shell{background:var(--white);border:1px solid rgba(23,32,51,.06);border-radius:28px;box-shadow:var(--shadow);overflow:hidden}
-.panel{display:none}.panel.on{display:block}
-.home{padding:20px}
-.level-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:14px}
-.section-kicker{margin:0 0 4px;font-size:.72rem;letter-spacing:.14em;font-weight:900;color:var(--blue)}
-.level-head h2{margin:0;font-size:clamp(1.35rem,2.5vw,2rem);letter-spacing:-.03em}
-.level-head p{margin:0;color:var(--muted);font-size:.82rem;font-weight:700}
-.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.level{min-height:92px;padding:15px 17px;border:2px solid var(--line);background:#fff;border-radius:18px;text-align:left;cursor:pointer;font-weight:900;transition:transform .14s ease,border-color .14s ease,background .14s ease,box-shadow .14s ease}
-.level:hover{transform:translateY(-1px)}
-.level.active{border-color:var(--blue);background:var(--blue-soft);box-shadow:0 7px 18px rgba(39,98,212,.10)}
-.level-num{display:flex;align-items:center;gap:8px;color:var(--blue);font-size:.74rem;letter-spacing:.08em}
-.level-title{display:block;margin-top:6px;font-size:1.07rem}
-.level-desc{display:block;margin-top:2px;color:var(--muted);font-size:.76rem;font-weight:700}
-.mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 12px;padding:5px;background:#f2efe8;border-radius:16px}
-.mode{min-height:54px;border:0;border-radius:12px;background:transparent;font-weight:900;cursor:pointer}
-.mode.active{background:#fff;box-shadow:0 4px 14px rgba(23,32,51,.07);color:var(--blue)}
-.card{border:1px solid #e7e2d8;border-radius:20px;background:#fcfbf8;padding:16px}
-.study-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:14px}
-.card h3{margin:0 0 6px;font-size:1.15rem}.card>p{margin:3px 0 12px;color:var(--muted);font-size:.83rem;font-weight:700}
-.formula-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.group{border:1px solid #e3ded4;border-radius:16px;background:#fff;padding:11px 12px}
-.group h4{margin:0 0 7px;font-size:.88rem}
-.row{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #eeeae2;padding:8px 0;font-size:.78rem}
-.row:first-of-type{border-top:0}.eq{font-weight:900;color:var(--blue);text-align:right}
-.tip{margin:11px 0 0;padding:10px 12px;border-radius:12px;background:#fff7e4;color:#6b5520;font-size:.78rem;font-weight:800}
-.challenge-card{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
-.challenge-copy h3{font-size:1.35rem}.challenge-copy p{max-width:680px}
-.challenge-start{min-height:58px;padding:0 26px;border:0;border-radius:16px;background:var(--blue);color:#fff;font-weight:900;cursor:pointer;box-shadow:0 10px 22px rgba(39,98,212,.20)}
-.mini-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.mini-stats span{padding:7px 10px;border-radius:999px;background:#f0eee8;color:var(--muted);font-size:.72rem;font-weight:900}
-.quiz{display:flex;flex-direction:column;min-height:min(720px,calc(100dvh - 120px))}
-.quizbar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #ece8df;background:#fbfaf7}
-.quiz-context{min-width:0}.quiz-context strong{display:block;font-size:.95rem}.quiz-context span{display:block;margin-top:2px;color:var(--muted);font-size:.72rem;font-weight:800}
-.live{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.live .pill{min-height:42px}.timer-pill{border-color:#cfd9ee;color:var(--blue);background:#f4f7ff}
-.quit{min-height:44px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 14px;font-weight:900;cursor:pointer}
-.quiz-body{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(330px,.8fr);gap:14px;padding:14px;flex:1}
-.figure-card{min-height:0;border:1px solid #e1ddd4;border-radius:20px;background:#fafcfb;display:flex;flex-direction:column;overflow:hidden}
-.figure-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid #ebe8e1}.tag{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:.72rem;font-weight:900}.progress{color:var(--muted);font-size:.72rem;font-weight:900}
-.figure{flex:1;min-height:300px;display:flex;align-items:center;justify-content:center;padding:12px}.figure svg{width:min(100%,760px);height:auto;max-height:min(54vh,460px)}
-.answer-card{display:flex;flex-direction:column;min-width:0;border:1px solid #e1ddd4;border-radius:20px;background:#fff;padding:16px}
-.prompt-label{margin:0;color:var(--muted);font-size:.72rem;letter-spacing:.09em;font-weight:900}.prompt{margin:4px 0 12px;font-size:clamp(1.14rem,2.3vw,1.55rem);line-height:1.45;font-weight:900;letter-spacing:-.02em}
-.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto}
-.choice{min-height:64px;padding:11px 12px;border:2px solid #dcd7ce;border-radius:16px;background:#fff;text-align:center;font-size:clamp(.86rem,1.7vw,1rem);font-weight:900;cursor:pointer;transition:transform .12s ease,border-color .12s ease,background .12s ease}
-.choice:hover{transform:translateY(-1px);border-color:#afbedb}.choice:disabled{cursor:default;transform:none}.choice.correct{border-color:var(--green);background:var(--green-soft);color:#206e51}.choice.wrong{border-color:var(--coral);background:var(--coral-soft);color:#a3402c}
-.feedback{min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center;margin:10px 0 0;border-radius:13px;background:#f5f3ee;font-size:.88rem;font-weight:900;padding:7px 10px}
-.feedback.good{background:var(--green-soft);color:#206e51}.feedback.bad{background:var(--coral-soft);color:#a3402c}
-.next{min-height:52px;margin-top:9px;border:0;border-radius:14px;background:var(--navy);color:#fff;font-weight:900;cursor:pointer}.next.hidden{display:none}
+:root{--paper:#f5f2ea;--white:#fff;--ink:#172033;--muted:#5d6677;--line:#d9d4c8;--blue:#2762d4;--blue-soft:#edf3ff;--green:#2f8b68;--green-soft:#eef9f4;--coral:#ee6a52;--coral-soft:#fff1ed;--amber:#e7a72d;--navy:#172b4d;--shadow:0 14px 40px rgba(23,32,51,.10);--radius:22px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:var(--paper);color:var(--ink);font-family:"Hiragino Sans","Yu Gothic UI","Yu Gothic",system-ui,sans-serif;line-height:1.55}button{font:inherit;color:inherit;-webkit-tap-highlight-color:transparent}button,input{touch-action:manipulation}button:focus-visible{outline:4px solid rgba(39,98,212,.28);outline-offset:3px}
+.app{width:min(1440px,100%);margin:0 auto;padding:12px 18px 24px}.sitebar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px;margin-bottom:10px}.brand{display:flex;align-items:center;gap:12px;min-width:0}.brand img{width:62px;height:62px;object-fit:contain;flex:none}.brand h1{font-size:clamp(1.35rem,2.5vw,2rem);line-height:1.15;letter-spacing:-.04em;margin:0}.brand p{margin:4px 0 0;color:var(--muted);font-size:.84rem;font-weight:700}.header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}.pill{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--white);font-weight:900;white-space:nowrap}.icon-btn{min-width:48px;min-height:48px;padding:0 14px;border:1px solid var(--line);border-radius:14px;background:var(--white);font-weight:900;cursor:pointer}.shell{background:var(--white);border:1px solid rgba(23,32,51,.06);border-radius:28px;box-shadow:var(--shadow);overflow:hidden}.panel{display:none}.panel.on{display:block}
+.home{padding:20px}.level-head{display:flex;align-items:end;justify-content:space-between;gap:12px;margin-bottom:14px}.section-kicker{margin:0 0 4px;font-size:.72rem;letter-spacing:.14em;font-weight:900;color:var(--blue)}.level-head h2{margin:0;font-size:clamp(1.35rem,2.5vw,2rem);letter-spacing:-.03em}.level-head p{margin:0;color:var(--muted);font-size:.82rem;font-weight:700}.levels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.level{min-height:92px;padding:15px 17px;border:2px solid var(--line);background:#fff;border-radius:18px;text-align:left;cursor:pointer;font-weight:900;transition:transform .14s ease,border-color .14s ease,background .14s ease,box-shadow .14s ease}.level:hover{transform:translateY(-1px)}.level.active{border-color:var(--blue);background:var(--blue-soft);box-shadow:0 7px 18px rgba(39,98,212,.10)}.level-num{display:flex;align-items:center;gap:8px;color:var(--blue);font-size:.74rem;letter-spacing:.08em}.level-title{display:block;margin-top:6px;font-size:1.07rem}.level-desc{display:block;margin-top:2px;color:var(--muted);font-size:.76rem;font-weight:700}.mode-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:14px 0 12px;padding:5px;background:#f2efe8;border-radius:16px}.mode{min-height:54px;border:0;border-radius:12px;background:transparent;font-weight:900;cursor:pointer}.mode.active{background:#fff;box-shadow:0 4px 14px rgba(23,32,51,.07);color:var(--blue)}
+.card{border:1px solid #e7e2d8;border-radius:20px;background:#fcfbf8;padding:16px}.study-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:14px}.card h3{margin:0 0 6px;font-size:1.15rem}.card>p{margin:3px 0 12px;color:var(--muted);font-size:.83rem;font-weight:700}.formula-list{display:grid;grid-template-columns:1fr 1fr;gap:10px}.group{border:1px solid #e3ded4;border-radius:16px;background:#fff;padding:11px 12px}.group h4{margin:0 0 7px;font-size:.88rem}.row{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #eeeae2;padding:8px 0;font-size:.78rem}.row:first-of-type{border-top:0}.eq{font-weight:900;color:var(--blue);text-align:right}.tip{margin:11px 0 0;padding:10px 12px;border-radius:12px;background:#fff7e4;color:#6b5520;font-size:.78rem;font-weight:800}.challenge-card{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}.challenge-copy h3{font-size:1.35rem}.challenge-copy p{max-width:680px}.challenge-start{min-height:58px;padding:0 26px;border:0;border-radius:16px;background:var(--blue);color:#fff;font-weight:900;cursor:pointer;box-shadow:0 10px 22px rgba(39,98,212,.20)}.mini-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.mini-stats span{padding:7px 10px;border-radius:999px;background:#f0eee8;color:var(--muted);font-size:.72rem;font-weight:900}
+.quiz{display:flex;flex-direction:column;min-height:min(720px,calc(100dvh - 120px))}.quiz.panel.on{display:flex}.quizbar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #ece8df;background:#fbfaf7}.quiz-context{min-width:0}.quiz-context strong{display:block;font-size:.95rem}.quiz-context span{display:block;margin-top:2px;color:var(--muted);font-size:.72rem;font-weight:800}.live{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}.live .pill{min-height:42px}.timer-pill{border-color:#cfd9ee;color:var(--blue);background:#f4f7ff}.quit{min-height:44px;border:1px solid var(--line);background:#fff;border-radius:12px;padding:0 14px;font-weight:900;cursor:pointer}.quiz-body{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(330px,.8fr);gap:14px;padding:14px;flex:1}.figure-card{min-height:0;border:1px solid #e1ddd4;border-radius:20px;background:#fafcfb;display:flex;flex-direction:column;overflow:hidden}.figure-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:1px solid #ebe8e1}.tag{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:.72rem;font-weight:900}.progress{color:var(--muted);font-size:.72rem;font-weight:900}.figure{flex:1;min-height:300px;display:flex;align-items:center;justify-content:center;padding:12px}.figure svg{width:min(100%,760px);height:auto;max-height:min(54vh,460px)}.answer-card{display:flex;flex-direction:column;min-width:0;border:1px solid #e1ddd4;border-radius:20px;background:#fff;padding:16px}.prompt-label{margin:0;color:var(--muted);font-size:.72rem;letter-spacing:.09em;font-weight:900}.prompt{margin:4px 0 12px;font-size:clamp(1.14rem,2.3vw,1.55rem);line-height:1.45;font-weight:900;letter-spacing:-.02em}.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto}.choice{min-height:64px;padding:11px 12px;border:2px solid #dcd7ce;border-radius:16px;background:#fff;text-align:center;font-size:clamp(.86rem,1.7vw,1rem);font-weight:900;cursor:pointer;transition:transform .12s ease,border-color .12s ease,background .12s ease}.choice:hover{transform:translateY(-1px);border-color:#afbedb}.choice:disabled{cursor:default;transform:none}.choice.correct{border-color:var(--green);background:var(--green-soft);color:#206e51}.choice.wrong{border-color:var(--coral);background:var(--coral-soft);color:#a3402c}.feedback{min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center;margin:10px 0 0;border-radius:13px;background:#f5f3ee;font-size:.88rem;font-weight:900;padding:7px 10px}.feedback.good{background:var(--green-soft);color:#206e51}.feedback.bad{background:var(--coral-soft);color:#a3402c}.next{min-height:52px;margin-top:9px;border:0;border-radius:14px;background:var(--navy);color:#fff;font-weight:900;cursor:pointer}.next.hidden{display:none}
 .result{padding:26px;text-align:center}.result-inner{max-width:720px;margin:0 auto}.result img{width:88px;height:88px;object-fit:contain}.result h2{margin:5px 0 0;font-size:1.65rem}.big{font-size:clamp(3rem,9vw,5.5rem);line-height:1;font-weight:1000;color:var(--blue);letter-spacing:-.06em;margin:14px 0 4px}.rank{display:inline-flex;padding:8px 14px;border-radius:999px;background:#fff4cb;font-weight:900}.result-msg{margin:10px 0;color:var(--muted);font-weight:800}.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}.result-stat{padding:12px;border:1px solid var(--line);border-radius:14px;background:#fcfbf8}.result-stat small{display:block;color:var(--muted);font-size:.68rem;font-weight:800}.result-stat strong{display:block;font-size:1.15rem;margin-top:2px}.reward{min-height:90px}.reward img{width:78px;height:78px;opacity:.3}.reward img.on{opacity:1}.result-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.main{min-height:56px;border:0;border-radius:15px;background:var(--blue);color:#fff;font-weight:900;cursor:pointer}.secondary{min-height:56px;border:1px solid var(--line);border-radius:15px;background:#fff;font-weight:900;cursor:pointer}
-.empty{display:none}
 @media (min-width:1100px){.quiz-body{grid-template-columns:minmax(0,1.28fr) minmax(390px,.72fr)}}
-@media (orientation:landscape) and (min-width:760px){.quiz-body{min-height:0}.figure{min-height:360px}.answer-card{padding:18px}.choices{gap:12px}.choice{min-height:68px}.feedback{min-height:52px}}
+@media (orientation:landscape) and (min-width:760px){.figure{min-height:360px}.answer-card{padding:18px}.choices{gap:12px}.choice{min-height:68px}.feedback{min-height:52px}}
 @media (max-width:860px){.app{padding:10px}.sitebar{min-height:60px}.brand img{width:54px;height:54px}.home{padding:14px}.study-grid{grid-template-columns:1fr}.quiz-body{grid-template-columns:1fr}.figure svg{max-height:44vh}.figure{min-height:260px}.quizbar{grid-template-columns:1fr auto}.live{justify-content:flex-start;grid-column:1/-1;grid-row:2}.quit{grid-column:2;grid-row:1}.quiz-context{grid-column:1;grid-row:1}.result-grid{grid-template-columns:1fr 1fr 1fr}}
 @media (max-width:640px){.app{padding:6px}.sitebar{align-items:center}.brand p{display:none}.brand img{width:48px;height:48px}.header-actions .pill{display:none}.shell{border-radius:20px}.levels{gap:7px}.level{min-height:78px;padding:11px}.level-title{font-size:.9rem}.level-desc{font-size:.66rem}.home{padding:10px}.mode{min-height:50px}.formula-list{grid-template-columns:1fr}.challenge-card{grid-template-columns:1fr}.challenge-start{width:100%}.quizbar{padding:9px 10px}.quiz-body{padding:9px}.figure{min-height:230px}.choices{grid-template-columns:1fr}.choice{min-height:60px}.result{padding:18px 12px}.result-actions{grid-template-columns:1fr}.result-grid{gap:7px}.result-stat{padding:10px 7px}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 <div class="app" id="app">
-  <header class="sitebar">
-    <div class="brand">
-      <img id="head" alt="ナビキャラクター">
-      <div><h1>公式仕分けくん</h1><p>図形を見て、公式をえらぼう。</p></div>
-    </div>
-    <div class="header-actions">
-      <span class="pill" id="hs">🏆 ハイスコア 0</span>
-      <button class="icon-btn" id="fullscreenBtn" type="button" aria-label="全画面表示">⛶</button>
-    </div>
-  </header>
-
-  <main class="shell">
-    <section id="home" class="panel on home">
-      <div class="level-head">
-        <div><p class="section-kicker">LEVEL SELECT</p><h2>どのレベルにする？</h2></div>
-        <p>まず「公式集」で確認してから挑戦できます。</p>
-      </div>
-      <div class="levels" role="tablist" aria-label="レベル選択">
-        <button class="level active" data-l="1" type="button"><span class="level-num">LEVEL 1</span><span class="level-title">基本の平面</span><span class="level-desc">面積・円周</span></button>
-        <button class="level" data-l="2" type="button"><span class="level-num">LEVEL 2</span><span class="level-title">平面＋立体</span><span class="level-desc">体積までひろげよう</span></button>
-        <button class="level" data-l="3" type="button"><span class="level-num">LEVEL 3</span><span class="level-title">ごちゃまぜ＋逆算</span><span class="level-desc">公式を使いこなす</span></button>
-      </div>
-
-      <div class="mode-tabs" role="tablist" aria-label="学習モード">
-        <button id="studyBtn" class="mode active" type="button">📖 公式集</button>
-        <button id="quizBtn" class="mode" type="button">🎯 30秒チャレンジ</button>
-      </div>
-
-      <div id="study" class="panel on">
-        <div class="study-grid">
-          <div class="card">
-            <p class="section-kicker">CHECK BEFORE CHALLENGE</p>
-            <h3 id="studyTitle"></h3>
-            <p id="studyDesc"></p>
-            <div id="studyList" class="formula-list"></div>
-          </div>
-          <div class="card">
-            <h3>🌱 覚えるポイント</h3>
-            <p id="tip"></p>
-            <div class="mini-stats">
-              <span>図形名</span><span>求めるもの</span><span>使う公式</span>
-            </div>
-            <button id="studyToQuiz" class="challenge-start" type="button">このレベルに挑戦する →</button>
-          </div>
-        </div>
-      </div>
-
-      <div id="quizHome" class="panel">
-        <div class="card challenge-card">
-          <div class="challenge-copy">
-            <p class="section-kicker">30 SECOND CHALLENGE</p>
-            <h3 id="title"></h3>
-            <p>30秒で、図形に合う公式をできるだけ正確にえらえよう。正解するとコンボが続きます。</p>
-            <div class="mini-stats"><span>⏱ 30秒</span><span>⭐ 正解で加点</span><span>🔥 コンボで加点アップ</span></div>
-          </div>
-          <button id="start" class="challenge-start" type="button">🔥 チャレンジ開始</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="quiz" class="panel quiz">
-      <div class="quizbar">
-        <div class="quiz-context"><strong id="quizLevelLabel">公式仕分け</strong><span id="quizProgressText">問題を見て、公式をえらぼう</span></div>
-        <div class="live">
-          <span class="pill timer-pill" id="timer">⏱ 30.0秒</span>
-          <span class="pill" id="live">⭐ 0点　🔥 0コンボ</span>
-        </div>
-        <button id="homeBtn" class="quit" type="button">やめる</button>
-      </div>
-      <div class="quiz-body">
-        <div class="figure-card">
-          <div class="figure-head"><span id="figureTag" class="tag">図形</span><span id="progress" class="progress">挑戦中</span></div>
-          <div id="figure" class="figure" aria-label="図形"></div>
-        </div>
-        <div class="answer-card">
-          <p class="prompt-label">QUESTION</p>
-          <div id="prompt" class="prompt"></div>
-          <div id="choices" class="choices" aria-label="公式の選択肢"></div>
-          <div id="feedback" class="feedback" aria-live="polite">公式をえらんでね。</div>
-          <button id="next" class="next hidden" type="button">次の問題へ →</button>
-        </div>
-      </div>
-    </section>
-
-    <section id="result" class="panel result">
-      <div class="result-inner">
-        <img id="resultNavi" alt="ナビキャラクター">
-        <p class="section-kicker">CHALLENGE COMPLETE</p>
-        <h2>チャレンジ終了！</h2>
-        <div id="final" class="big">0点</div>
-        <div id="rank" class="rank"></div>
-        <p id="resultMsg" class="result-msg"></p>
-        <div class="result-grid">
-          <div class="result-stat"><small>正解</small><strong id="rc">0</strong></div>
-          <div class="result-stat"><small>まちがい</small><strong id="wc">0</strong></div>
-          <div class="result-stat"><small>最大コンボ</small><strong id="maxcombo">0</strong></div>
-        </div>
-        <div class="reward"><img id="badge" alt="バッジ"></div>
-        <div class="result-actions">
-          <button id="retry" class="main" type="button">もう一度挑戦</button>
-          <button id="resultHome" class="secondary" type="button">レベル選択へ</button>
-        </div>
-      </div>
-    </section>
-  </main>
-</div>
-
+<header class="sitebar"><div class="brand"><img id="head" alt="ナビキャラクター"><div><h1>公式仕分けくん</h1><p>図形を見て、公式をえらぼう。</p></div></div><div class="header-actions"><span class="pill" id="hs">🏆 ハイスコア 0</span><button class="icon-btn" id="fullscreenBtn" type="button" aria-label="全画面表示">⛶</button></div></header>
+<main class="shell">
+<section id="home" class="panel on home">
+<div class="level-head"><div><p class="section-kicker">LEVEL SELECT</p><h2>どのレベルにする？</h2></div><p>まず「公式集」で確認してから挑戦できます。</p></div>
+<div class="levels" role="tablist" aria-label="レベル選択"><button class="level active" data-l="1" type="button"><span class="level-num">LEVEL 1</span><span class="level-title">基本の平面</span><span class="level-desc">面積・円周</span></button><button class="level" data-l="2" type="button"><span class="level-num">LEVEL 2</span><span class="level-title">平面＋立体</span><span class="level-desc">体積までひろげよう</span></button><button class="level" data-l="3" type="button"><span class="level-num">LEVEL 3</span><span class="level-title">ごちゃまぜ＋逆算</span><span class="level-desc">公式を使いこなす</span></button></div>
+<div class="mode-tabs" role="tablist" aria-label="学習モード"><button id="studyBtn" class="mode active" type="button">📖 公式集</button><button id="quizBtn" class="mode" type="button">🎯 30秒チャレンジ</button></div>
+<div id="study" class="panel on"><div class="study-grid"><div class="card"><p class="section-kicker">CHECK BEFORE CHALLENGE</p><h3 id="studyTitle"></h3><p id="studyDesc"></p><div id="studyList" class="formula-list"></div></div><div class="card"><h3>🌱 覚えるポイント</h3><p id="tip"></p><div class="mini-stats"><span>図形名</span><span>求めるもの</span><span>使う公式</span></div><button id="studyToQuiz" class="challenge-start" type="button">このレベルに挑戦する →</button></div></div></div>
+<div id="quizHome" class="panel"><div class="card challenge-card"><div class="challenge-copy"><p class="section-kicker">30 SECOND CHALLENGE</p><h3 id="title"></h3><p>30秒で、図形に合う公式をできるだけ正確にえらぼう。正解するとコンボが続きます。</p><div class="mini-stats"><span>⏱ 30秒</span><span>⭐ 正解で加点</span><span>🔥 コンボで加点アップ</span></div></div><button id="start" class="challenge-start" type="button">🔥 チャレンジ開始</button></div></div>
+</section>
+<section id="quiz" class="panel quiz"><div class="quizbar"><div class="quiz-context"><strong id="quizLevelLabel">公式仕分け</strong><span id="quizProgressText">問題を見て、公式をえらぼう</span></div><div class="live"><span class="pill timer-pill" id="timer">⏱ 30.0秒</span><span class="pill" id="live">⭐ 0点　🔥 0コンボ</span></div><button id="homeBtn" class="quit" type="button">やめる</button></div><div class="quiz-body"><div class="figure-card"><div class="figure-head"><span id="figureTag" class="tag">図形</span><span id="progress" class="progress">挑戦中</span></div><div id="figure" class="figure" aria-label="図形"></div></div><div class="answer-card"><p class="prompt-label">QUESTION</p><div id="prompt" class="prompt"></div><div id="choices" class="choices" aria-label="公式の選択肢"></div><div id="feedback" class="feedback" aria-live="polite">公式をえらんでね。</div><button id="next" class="next hidden" type="button">次の問題へ →</button></div></div></section>
+<section id="result" class="panel result"><div class="result-inner"><img id="resultNavi" alt="ナビキャラクター"><p class="section-kicker">CHALLENGE COMPLETE</p><h2>チャレンジ終了！</h2><div id="final" class="big">0点</div><div id="rank" class="rank"></div><p id="resultMsg" class="result-msg"></p><div class="result-grid"><div class="result-stat"><small>正解</small><strong id="rc">0</strong></div><div class="result-stat"><small>まちがい</small><strong id="wc">0</strong></div><div class="result-stat"><small>最大コンボ</small><strong id="maxcombo">0</strong></div></div><div class="reward"><img id="badge" alt="バッジ"></div><div class="result-actions"><button id="retry" class="main" type="button">もう一度挑戦</button><button id="resultHome" class="secondary" type="button">レベル選択へ</button></div></div></section>
+</main></div>
 <script>
-const N='https://raw.githubusercontent.com/TT-sensei/navi-character-/main/assets/web/characters/';
-const B='https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/web/badges/math/geometry/badge.webp';
-const $=s=>document.querySelector(s);
-const D={'長方形':'たて × 横','正方形':'一辺 × 一辺','平行四辺形':'底辺 × 高さ','三角形':'底辺 × 高さ ÷ 2','台形':'(上底 ＋ 下底) × 高さ ÷ 2','ひし形':'対角線 × 対角線 ÷ 2','円':'半径 × 半径 × 3.14','円周':'直径 × 3.14','立方体':'一辺 × 一辺 × 一辺','直方体':'たて × 横 × 高さ','角柱':'底面積 × 高さ','円柱':'底面積 × 高さ','三角形の高さ':'面積 × 2 ÷ 底辺','平行四辺形の高さ':'面積 ÷ 底辺','長方形の横':'面積 ÷ たて','直方体の高さ':'体積 ÷ たて ÷ 横'};
-const G={1:['長方形','正方形','平行四辺形','三角形','台形','ひし形','円','円周'],2:['長方形','正方形','平行四辺形','三角形','台形','ひし形','円','円周','立方体','直方体','角柱','円柱'],3:Object.keys(D)};
-const INFO={1:['基本の平面公式','saku'],2:['平面＋立体公式','kai'],3:['ごちゃまぜ＋逆算','riku']};
-let L=1,Q=[],cur=null,score=0,combo=0,maxcombo=0,correct=0,wrong=0,started=0,timerId=null,ended=false,advanceId=null,answered=0;
-
-function show(id){['study','quizHome','quiz'].forEach(x=>$('#'+x)?.classList.remove('on'));if(id==='result'){$('#result').classList.add('on');$('#home')?.classList.remove('on')}else{$('#home').classList.add('on');$('#'+id)?.classList.add('on')}}
-function showQuizScreen(){['home','result'].forEach(x=>$('#'+x)?.classList.remove('on'));$('#quiz').classList.add('on')}
-function nav(p='waving'){const u=N+INFO[L][1]+'/fullbody/'+p+'.webp';['#head','#resultNavi'].forEach(s=>$(s).src=u)}
-function key(){return 'kousiki-highscore-'+L}
-function updateHS(){const h=Number(localStorage.getItem(key())||0);$('#hs').textContent='🏆 ハイスコア '+h}
-function shuffle(a){return [...a].sort(()=>Math.random()-.5)}
-function setActiveLevels(){document.querySelectorAll('.level').forEach(b=>b.classList.toggle('active',+b.dataset.l===L))}
-function setMode(mode){const study=mode==='study';$('#studyBtn').classList.toggle('active',study);$('#quizBtn').classList.toggle('active',!study);show(study?'study':'quizHome')}
-function renderStudy(){
-  const names=G[L];
-  $('#studyTitle').textContent='レベル'+L+'：'+INFO[L][0];
-  $('#studyDesc').textContent=L===3?'公式を逆向きに使う問題も入っています。':'まずは「図形名 → 求めるもの → 公式」の順に確認しよう。';
-  const groups=[['平面図形',['長方形','正方形','平行四辺形','三角形','台形','ひし形','円','円周']],['立体の体積',['立方体','直方体','角柱','円柱']],['逆算',['三角形の高さ','平行四辺形の高さ','長方形の横','直方体の高さ']]];
-  $('#studyList').innerHTML=groups.map(g=>{const a=g[1].filter(x=>names.includes(x));return a.length?`<div class="group"><h4>${g[0]}</h4>${a.map(x=>`<div class="row"><b>${x}</b><span class="eq">${D[x]}</span></div>`).join('')}</div>`:''}).join('');
-  $('#tip').textContent=L===3?'逆算は、もとの公式から「求めたいもの」を残して考えよう。':L===2?'角柱も円柱も基本は「底面積 × 高さ」。':'図形の名前と「何を求めるか」をセットで見よう。';
-}
-function renderHome(){nav();renderStudy();$('#title').textContent='レベル'+L+'：'+INFO[L][0];updateHS();setActiveLevels()}
-function svg(body){return `<svg viewBox="0 0 620 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="学習図形">${body}</svg>`}
-function line(x1,y1,x2,y2,t){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#526b80" stroke-width="2"/><text x="${(x1+x2)/2}" y="${(y1+y2)/2-7}" text-anchor="middle" font-size="17" font-weight="900">${t}</text>`}
+const N='https://raw.githubusercontent.com/TT-sensei/navi-character-/main/assets/web/characters/';const B='https://raw.githubusercontent.com/TT-sensei/edu-assets/main/assets/web/badges/math/geometry/badge.webp';const $=s=>document.querySelector(s);const D={'長方形':'たて × 横','正方形':'一辺 × 一辺','平行四辺形':'底辺 × 高さ','三角形':'底辺 × 高さ ÷ 2','台形':'(上底 ＋ 下底) × 高さ ÷ 2','ひし形':'対角線 × 対角線 ÷ 2','円':'半径 × 半径 × 3.14','円周':'直径 × 3.14','立方体':'一辺 × 一辺 × 一辺','直方体':'たて × 横 × 高さ','角柱':'底面積 × 高さ','円柱':'底面積 × 高さ','三角形の高さ':'面積 × 2 ÷ 底辺','平行四辺形の高さ':'面積 ÷ 底辺','長方形の横':'面積 ÷ たて','直方体の高さ':'体積 ÷ たて ÷ 横'};const G={1:['長方形','正方形','平行四辺形','三角形','台形','ひし形','円','円周'],2:['長方形','正方形','平行四辺形','三角形','台形','ひし形','円','円周','立方体','直方体','角柱','円柱'],3:Object.keys(D)};const INFO={1:['基本の平面公式','saku'],2:['平面＋立体公式','kai'],3:['ごちゃまぜ＋逆算','riku']};let L=1,Q=[],cur=null,score=0,combo=0,maxcombo=0,correct=0,wrong=0,started=0,timerId=null,ended=false,advanceId=null,answered=0;
+function show(id){['study','quizHome','quiz'].forEach(x=>$('#'+x)?.classList.remove('on'));if(id==='result'){$('#result').classList.add('on');$('#home')?.classList.remove('on')}else{$('#home').classList.add('on');$('#'+id)?.classList.add('on')}}function showQuizScreen(){['home','result'].forEach(x=>$('#'+x)?.classList.remove('on'));$('#quiz').classList.add('on')}function nav(p='waving'){const u=N+INFO[L][1]+'/fullbody/'+p+'.webp';['#head','#resultNavi'].forEach(s=>$(s).src=u)}function key(){return 'kousiki-highscore-'+L}function updateHS(){const h=Number(localStorage.getItem(key())||0);$('#hs').textContent='🏆 ハイスコア '+h}function shuffle(a){return [...a].sort(()=>Math.random()-.5)}function setActiveLevels(){document.querySelectorAll('.level').forEach(b=>b.classList.toggle('active',+b.dataset.l===L))}function setMode(mode){const study=mode==='study';$('#studyBtn').classList.toggle('active',study);$('#quizBtn').classList.toggle('active',!study);show(study?'study':'quizHome')}
+function renderStudy(){const names=G[L];$('#studyTitle').textContent='レベル'+L+'：'+INFO[L][0];$('#studyDesc').textContent=L===3?'公式を逆向きに使う問題も入っています。':'まずは「図形名 → 求めるもの → 公式」の順に確認しよう。';const groups=[['平面図形',['長方形','正方形','平行四辺形','三角形','台形','ひし形','円','円周']],['立体の体積',['立方体','直方体','角柱','円柱']],['逆算',['三角形の高さ','平行四辺形の高さ','長方形の横','直方体の高さ']]];$('#studyList').innerHTML=groups.map(g=>{const a=g[1].filter(x=>names.includes(x));return a.length?`<div class="group"><h4>${g[0]}</h4>${a.map(x=>`<div class="row"><b>${x}</b><span class="eq">${D[x]}</span></div>`).join('')}</div>`:''}).join('');$('#tip').textContent=L===3?'逆算は、もとの公式から「求めたいもの」を残して考えよう。':L===2?'角柱も円柱も基本は「底面積 × 高さ」。':'図形の名前と「何を求めるか」をセットで見よう。'}function renderHome(){nav();renderStudy();$('#title').textContent='レベル'+L+'：'+INFO[L][0];updateHS();setActiveLevels()}
+function svg(body){return `<svg viewBox="0 0 620 290" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="学習図形">${body}</svg>`}function line(x1,y1,x2,y2,t){return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#526b80" stroke-width="2"/><text x="${(x1+x2)/2}" y="${(y1+y2)/2-7}" text-anchor="middle" font-size="17" font-weight="900">${t}</text>`}
 function draw(k){let s='';if(k==='長方形')s=`<rect x="120" y="55" width="350" height="150" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/>${line(120,240,470,240,'8 cm')}${line(90,55,90,205,'5 cm')}`;else if(k==='正方形')s=`<rect x="190" y="35" width="220" height="220" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/>${line(190,275,410,275,'6 cm')}`;else if(k==='平行四辺形')s=`<polygon points="150,205 440,205 500,65 210,65" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/><line x1="210" y1="65" x2="210" y2="205" stroke="#2762d4" stroke-width="3"/>${line(150,240,440,240,'8 cm')}${line(210,140,210,205,'5 cm')}`;else if(k==='三角形'||k==='三角形の高さ')s=`<polygon points="150,220 470,220 310,55" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/><line x1="310" y1="55" x2="310" y2="220" stroke="#2762d4" stroke-width="3"/>${line(150,250,470,250,'10 cm')}${line(310,135,310,220,'6 cm')}`;else if(k==='台形')s=`<polygon points="200,60 420,60 500,220 120,220" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/>${line(200,40,420,40,'6 cm')}${line(120,250,500,250,'10 cm')}${line(180,60,180,220,'5 cm')}`;else if(k==='ひし形')s=`<polygon points="310,40 480,145 310,250 140,145" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/>${line(180,145,440,145,'8 cm')}${line(310,75,310,215,'6 cm')}`;else if(k==='円'||k==='円周')s=`<circle cx="310" cy="145" r="100" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/><line x1="310" y1="145" x2="410" y2="145" stroke="#2762d4" stroke-width="3"/>${line(310,175,410,175,'半径 5 cm')}`;else if(k==='立方体')s=`<path d="M190 85l120-45 120 45-120 45zM190 85v120l120 45V130M430 85v120l-120 45" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/>${line(190,235,310,280,'5 cm')}`;else if(k==='直方体')s=`<path d="M150 95l180-35 150 55-180 40zM150 95v105l150 55V150M480 115v105l-180 35" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/>${line(150,225,300,280,'6 cm')}${line(300,150,480,115,'4 cm')}`;else if(k==='角柱')s=`<polygon points="150,90 250,45 350,90 250,135" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/><polygon points="150,90 150,205 250,250 250,135" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/><polygon points="350,90 350,205 250,250 250,135" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/><text x="410" y="150" font-size="24" font-weight="900">角柱</text>`;else if(k==='円柱')s=`<ellipse cx="310" cy="65" rx="115" ry="35" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/><path d="M195 65v150M425 65v150" stroke="#36516a" stroke-width="4"/><ellipse cx="310" cy="215" rx="115" ry="35" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/>`;else s=`<rect x="160" y="65" width="300" height="160" fill="#e5f2fb" stroke="#36516a" stroke-width="4"/>`;return svg(s)}
-function question(k){
-  let opts;
-  if(k==='円'||k==='円周'){const other=shuffle(G[L].filter(x=>x!==k&&x!=='円'&&x!=='円周')).slice(0,2);opts=shuffle([k,k==='円'?'円周':'円',...other]);}
-  else{opts=shuffle(G[L]).slice(0,4);if(!opts.includes(k))opts[0]=k;opts=shuffle(opts)}
-  const promptMap={'長方形':'この図形の面積に使う公式は？','正方形':'この図形の面積に使う公式は？','平行四辺形':'この図形の面積に使う公式は？','三角形':'この図形の面積に使う公式は？','台形':'この図形の面積に使う公式は？','ひし形':'この図形の面積に使う公式は？','円':'この図形の面積に使う公式は？','円周':'円周を求める公式は？','立方体':'体積を求める公式は？','直方体':'体積を求める公式は？','角柱':'体積を求める公式は？','円柱':'体積を求める公式は？','三角形の高さ':'三角形の高さを求める公式は？','平行四辺形の高さ':'平行四辺形の高さを求める公式は？','長方形の横':'長方形の横を求める公式は？','直方体の高さ':'直方体の高さを求める公式は？'};
-  return {k,opts,prompt:promptMap[k]||'正しい公式は？'};
-}
-function renderQ(){
-  if(ended)return;
-  clearTimeout(advanceId);
-  cur=question(shuffle(Q)[0]);answered++;
-  $('#figure').innerHTML=draw(cur.k);
-  $('#figureTag').textContent='図形：'+cur.k;
-  $('#progress').textContent=answered+'問目';
-  $('#quizProgressText').textContent='図形を見て、いちばん合う公式をえらぼう';
-  $('#prompt').textContent=cur.prompt;
-  $('#choices').innerHTML=cur.opts.map(x=>`<button class="choice" type="button" data-k="${x}">${D[x]}</button>`).join('');
-  $('#feedback').className='feedback';$('#feedback').textContent='公式をえらんでね。';$('#next').classList.add('hidden');
-}
+function question(k){let opts;if(k==='円'||k==='円周'){const other=shuffle(G[L].filter(x=>x!==k&&x!=='円'&&x!=='円周')).slice(0,2);opts=shuffle([k,k==='円'?'円周':'円',...other]);}else{opts=shuffle(G[L]).slice(0,4);if(!opts.includes(k))opts[0]=k;opts=shuffle(opts)}const promptMap={'長方形':'この図形の面積に使う公式は？','正方形':'この図形の面積に使う公式は？','平行四辺形':'この図形の面積に使う公式は？','三角形':'この図形の面積に使う公式は？','台形':'この図形の面積に使う公式は？','ひし形':'この図形の面積に使う公式は？','円':'この図形の面積に使う公式は？','円周':'円周を求める公式は？','立方体':'体積を求める公式は？','直方体':'体積を求める公式は？','角柱':'体積を求める公式は？','円柱':'体積を求める公式は？','三角形の高さ':'三角形の高さを求める公式は？','平行四辺形の高さ':'平行四辺形の高さを求める公式は？','長方形の横':'長方形の横を求める公式は？','直方体の高さ':'直方体の高さを求める公式は？'};return {k,opts,prompt:promptMap[k]||'正しい公式は？'}}
+function renderQ(){if(ended)return;clearTimeout(advanceId);cur=question(shuffle(Q)[0]);answered++;$('#figure').innerHTML=draw(cur.k);$('#figureTag').textContent='図形：'+cur.k;$('#progress').textContent=answered+'問目';$('#quizProgressText').textContent='図形を見て、いちばん合う公式をえらぼう';$('#prompt').textContent=cur.prompt;$('#choices').innerHTML=cur.opts.map(x=>`<button class="choice" type="button" data-k="${x}">${D[x]}</button>`).join('');$('#feedback').className='feedback';$('#feedback').textContent='公式をえらんでね。';$('#next').classList.add('hidden')}
 function updateLive(){const sec=Math.max(0,(30000-(Date.now()-started))/1000);$('#timer').textContent='⏱ '+sec.toFixed(1)+'秒';$('#live').textContent='⭐ '+score+'点　🔥 '+combo+'コンボ'}
 function start(){clearInterval(timerId);clearTimeout(advanceId);score=0;combo=0;maxcombo=0;correct=0;wrong=0;answered=0;ended=false;started=Date.now();Q=G[L];showQuizScreen();nav();$('#quizLevelLabel').textContent='レベル'+L+'：'+INFO[L][0];renderQ();updateLive();timerId=setInterval(()=>{updateLive();if(Date.now()-started>=30000)end()},100)}
-function answer(btn){
-  if(ended||btn.disabled)return;
-  document.querySelectorAll('.choice').forEach(x=>x.disabled=true);
-  const ok=btn.dataset.k===cur.k;let gained=0;
-  if(ok){btn.classList.add('correct');combo++;maxcombo=Math.max(maxcombo,combo);gained=10+Math.min(combo-1,10)*5;score+=gained;correct++;$('#feedback').className='feedback good';$('#feedback').textContent=combo>=3?'🔥 '+combo+'コンボ！ +'+gained+'点':'⭕ 正解！ +'+gained+'点'}
-  else{btn.classList.add('wrong');combo=0;wrong++;document.querySelectorAll('.choice').forEach(x=>{if(x.dataset.k===cur.k)x.classList.add('correct')});$('#feedback').className='feedback bad';$('#feedback').textContent='💡 正解は「'+D[cur.k]+'」'}
-  updateLive();
-  if(Date.now()-started>=30000){end();return}
-  advanceId=setTimeout(renderQ,ok?180:500);
-}
-function end(){
-  if(ended)return;ended=true;clearInterval(timerId);clearTimeout(advanceId);const old=Number(localStorage.getItem(key())||0);const isNew=score>old;if(isNew)localStorage.setItem(key(),score);
-  $('#final').textContent=score+'点';$('#rank').textContent=score>=150?'🏆 公式マスター':score>=100?'🌟 公式名人':score>=60?'✨ 公式上手':'🌱 まずは挑戦！';$('#resultMsg').textContent=isNew&&score>0?'🎉 ハイスコア更新！':'今回もよくがんばった！';$('#rc').textContent=correct;$('#wc').textContent=wrong;$('#maxcombo').textContent=maxcombo;$('#badge').src=B;$('#badge').classList.toggle('on',score>=100);updateHS();['#home','#quiz'].forEach(s=>$(s).classList.remove('on'));$('#result').classList.add('on');nav('celebration');
-}
-function quitToHome(){clearInterval(timerId);clearTimeout(advanceId);ended=true;renderHome();setMode('quiz');updateHS()}
-$('.levels').addEventListener('click',e=>{const b=e.target.closest('.level');if(!b)return;L=+b.dataset.l;renderHome()});
-$('#studyBtn').onclick=()=>setMode('study');$('#quizBtn').onclick=()=>setMode('quizHome');$('#studyToQuiz').onclick=()=>setMode('quizHome');$('#start').onclick=start;$('#retry').onclick=start;$('#choices').onclick=e=>{const b=e.target.closest('.choice');if(b)answer(b)};$('#homeBtn').onclick=quitToHome;$('#resultHome').onclick=()=>{renderHome();setMode('study')};
-$('#fullscreenBtn').onclick=async()=>{try{if(!document.fullscreenElement){await document.getElementById('app').requestFullscreen?.()}else{await document.exitFullscreen?.()}}catch(_){}};
-document.addEventListener('fullscreenchange',()=>{$('#fullscreenBtn').textContent=document.fullscreenElement?'×':'⛶';});
-renderHome();
+function answer(btn){if(ended||btn.disabled)return;document.querySelectorAll('.choice').forEach(x=>x.disabled=true);const ok=btn.dataset.k===cur.k;let gained=0;if(ok){btn.classList.add('correct');combo++;maxcombo=Math.max(maxcombo,combo);gained=10+Math.min(combo-1,10)*5;score+=gained;correct++;$('#feedback').className='feedback good';$('#feedback').textContent=combo>=3?'🔥 '+combo+'コンボ！ +'+gained+'点':'⭕ 正解！ +'+gained+'点'}else{btn.classList.add('wrong');combo=0;wrong++;document.querySelectorAll('.choice').forEach(x=>{if(x.dataset.k===cur.k)x.classList.add('correct')});$('#feedback').className='feedback bad';$('#feedback').textContent='💡 正解は「'+D[cur.k]+'」'}updateLive();if(Date.now()-started>=30000){end();return}advanceId=setTimeout(renderQ,ok?180:500)}
+function end(){if(ended)return;ended=true;clearInterval(timerId);clearTimeout(advanceId);const old=Number(localStorage.getItem(key())||0);const isNew=score>old;if(isNew)localStorage.setItem(key(),score);$('#final').textContent=score+'点';$('#rank').textContent=score>=150?'🏆 公式マスター':score>=100?'🌟 公式名人':score>=60?'✨ 公式上手':'🌱 まずは挑戦！';$('#resultMsg').textContent=isNew&&score>0?'🎉 ハイスコア更新！':'今回もよくがんばった！';$('#rc').textContent=correct;$('#wc').textContent=wrong;$('#maxcombo').textContent=maxcombo;$('#badge').src=B;$('#badge').classList.toggle('on',score>=100);updateHS();['#home','#quiz'].forEach(s=>$(s).classList.remove('on'));$('#result').classList.add('on');nav('waving')}
+function quitToHome(){clearInterval(timerId);clearTimeout(advanceId);ended=true;renderHome();setMode('quizHome');updateHS()}
+$('.levels').addEventListener('click',e=>{const b=e.target.closest('.level');if(!b)return;L=+b.dataset.l;renderHome()});$('#studyBtn').onclick=()=>setMode('study');$('#quizBtn').onclick=()=>setMode('quizHome');$('#studyToQuiz').onclick=()=>setMode('quizHome');$('#start').onclick=start;$('#retry').onclick=start;$('#choices').onclick=e=>{const b=e.target.closest('.choice');if(b)answer(b)};$('#homeBtn').onclick=quitToHome;$('#resultHome').onclick=()=>{renderHome();setMode('study')};$('#fullscreenBtn').onclick=async()=>{try{if(!document.fullscreenElement){await document.getElementById('app').requestFullscreen?.()}else{await document.exitFullscreen?.()}}catch(_){}};document.addEventListener('fullscreenchange',()=>{$('#fullscreenBtn').textContent=document.fullscreenElement?'×':'⛶'});renderHome();
 </script>
 </body>
 </html>
